@@ -6,7 +6,7 @@ public class BlinkLeds {
     
     public static void main(String[] args) {
         AudioMeneger audioMeneger = new AudioMeneger();
-        audioMeneger.openFile("testaudio.wav");
+        audioMeneger.openFile("bach.wav");
         audioMeneger.playAudioForTests();
         
         
