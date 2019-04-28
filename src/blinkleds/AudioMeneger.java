@@ -43,7 +43,7 @@ public class AudioMeneger {
             info = new DataLine.Info(Clip.class, audioFormat);
 
             clip = (Clip) AudioSystem.getLine(info);
-
+            System.out.println(audioFormat.toString());
             clip.addLineListener(new LineListener() {
                 @Override
                 public void update(LineEvent event) {
