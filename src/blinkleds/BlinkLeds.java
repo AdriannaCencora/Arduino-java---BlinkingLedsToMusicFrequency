@@ -5,24 +5,28 @@ public class BlinkLeds {
     public static final int LIGHT_OFF = 0x00;
     
     public static void main(String[] args) {
+        AudioMeneger audioMeneger = new AudioMeneger();
+        audioMeneger.openFile("testaudio.wav");
+        audioMeneger.playAudioForTests();
+        
         
         //PROPER SERIAL NAME NEEDS TO BE PROVIDED BEFORE TESTING!
-        SerialPortConnectionMeneger serialConnector = new SerialPortConnectionMeneger("dev/ttysO");
-        serialConnector.initSerial();
-        
-        for (int i = 0; i < 10; i++) {
-            serialConnector.sendBytes(LIGHT_ON);
-        
-                try {
-                    Thread.sleep(1000);
-                }
-                catch(InterruptedException ex){
-                    Thread.currentThread().interrupt();
-                }
-                
-            serialConnector.sendBytes(LIGHT_OFF);     
-    }
-    
-        serialConnector.closeSerial();
+//        SerialPortConnectionMeneger serialConnector = new SerialPortConnectionMeneger("dev/ttysO");
+//        serialConnector.initSerial();
+//        
+//        for (int i = 0; i < 10; i++) {
+//            serialConnector.sendBytes(LIGHT_ON);
+//        
+//                try {
+//                    Thread.sleep(1000);
+//                }
+//                catch(InterruptedException ex){
+//                    Thread.currentThread().interrupt();
+//                }
+//                
+//            serialConnector.sendBytes(LIGHT_OFF);     
+//    }
+//    
+//        serialConnector.closeSerial();
     }
 }
