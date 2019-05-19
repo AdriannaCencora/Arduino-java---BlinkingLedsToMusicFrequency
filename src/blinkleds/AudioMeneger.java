@@ -14,19 +14,20 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 
-
 /**
  *
  * @author adrianna
  */
 public class AudioMeneger {
-
     private File soundFile;
-    private AudioInputStream audioStream;
-    private AudioFormat audioFormat;
+    private static AudioInputStream audioStream;
+    private static AudioFormat audioFormat;
     private Clip clip;
     private DataLine.Info info;
-
+    
+    private byte[] audioBytes;
+    private int numberOfSamples;
+     
     public void openFile(String filename) {
         try {
             soundFile = new File(filename);
@@ -36,14 +37,21 @@ public class AudioMeneger {
         }
     }
 
-    public void playAudioForTests() {
+    private void prepareAudioFile() {
         try {
             audioStream = AudioSystem.getAudioInputStream(soundFile);
             audioFormat = audioStream.getFormat();
             info = new DataLine.Info(Clip.class, audioFormat);
-
+          
+        } catch (Exception exc) {
+            exc.printStackTrace(System.out);
+        }
+        }
+    
+    public void playAudio() {
+        prepareAudioFile();
+        try {
             clip = (Clip) AudioSystem.getLine(info);
-            System.out.println(audioFormat.toString());
             clip.addLineListener(new LineListener() {
                 @Override
                 public void update(LineEvent event) {
@@ -52,12 +60,49 @@ public class AudioMeneger {
                     }
                 }
             });
-
             clip.open(audioStream);
             clip.start();
         } catch (Exception exc) {
             exc.printStackTrace(System.out);
         }
 
+    }
+
+    public void readWavFile() {
+        prepareAudioFile();
+        try {
+            int bytesPerFrame = audioStream.getFormat().getFrameSize();
+            if (bytesPerFrame == AudioSystem.NOT_SPECIFIED) {
+                bytesPerFrame = 1;
+            }
+            int numBytes = 1024 * bytesPerFrame;
+            audioBytes = new byte[numBytes];
+            int totalFramesRead = 0;
+            
+            numberOfSamples = audioBytes.length / bytesPerFrame;
+            
+            try {
+                int numBytesRead = 0;
+                int numFramesRead = 0;
+                while ((numBytesRead = audioStream.read(audioBytes)) != -1) {
+                    
+                    numFramesRead = numBytesRead / bytesPerFrame;
+                    totalFramesRead += numFramesRead;
+                  
+                }
+                audioStream.close();
+                
+            } catch (Exception ex) {
+               ex.printStackTrace(System.out);
+            }
+
+        } catch (Exception exc) {
+            exc.printStackTrace(System.out);
+        }
+    }
+
+    public double[] retriveWavFile() {
+        readWavFile();    
+        return SignalProcessing.calculateFFT(audioBytes, numberOfSamples);
     }
 }
